@@ -1,9 +1,10 @@
 using System;
 using UnityEngine;
 
-public class GameManager : SingletonMonoObject
+public class Manager : SingletonMonoObject
 {
     SceneMover sceneMover;
+    HighscoreManager highscoreManager;
 
     private void Awake()
     {
