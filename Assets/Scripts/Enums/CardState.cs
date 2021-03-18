@@ -1,6 +1,6 @@
 public enum CardState
 {
-    NONE,
-    SELECTED,
-    FOUND
+    BACK,
+    FRONT,
+    DONE
 }
