@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ae93c3084c6dc34ca63632c72bd302e, type: 3}
   m_Name: Stage3
   m_EditorClassIdentifier: 
-  level: 1
-  xyCounts: {x: 6, y: 3}
+  level: 3
+  xyCounts: {x: 4, y: 4}
   limitTime: 30

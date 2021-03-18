@@ -7,7 +7,7 @@ using System;
 
 public class Timer : MonoBehaviour
 {
-    public int limitTime = 10;
+    private int limitTime = 10;
     private float time;
 
     private Image img;
@@ -15,20 +15,13 @@ public class Timer : MonoBehaviour
 
     private IEnumerator timerCoroutine = null;
 
-    private delegate void GameEndCallback();
-    private GameEndCallback endCallback = null;
+    private Action endCallback = null;
 
-    public void SetTimer()
+    public void StartTimer(int limitTime, Action callback)
     {
+        this.endCallback = callback;
         img = this.GetComponent<Image>();
         timeString = this.transform.GetChild(0).GetComponent<Text>();
-
-        // test TODO : StartTimer를 public으로
-        StartTimer(limitTime, ()=>{Debug.Log("Game End");});
-    }
-
-    private void StartTimer(int limitTime, GameEndCallback callback)
-    {
         // 이전에 진행되던 타이머코루틴이 있다면 멈춰주기
         if(timerCoroutine != null)
         {

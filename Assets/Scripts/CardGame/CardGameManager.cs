@@ -8,8 +8,8 @@ public class CardGameManager : MonoBehaviour
     public CardGameStageInfo stageInfo;
     private byte level;
     private Vector2 xyCounts;
-    public GameObject gamePanel;
 
+    public GameObject gamePanel;
     public GameObject cardPrefab;
 
     private byte remainCardPairs;
@@ -19,19 +19,26 @@ public class CardGameManager : MonoBehaviour
     {
         level = stageInfo.level;
         xyCounts = stageInfo.xyCounts;
-        timer.limitTime = stageInfo.limitTime;
-        timer.SetTimer();
+        timer.StartTimer(stageInfo.limitTime, () => {
+            EndGame();
+            Manager.failed = true;
+        } );
         remainCardPairs = (byte)(xyCounts.x * xyCounts.y / 2);
 
         SetGamePanelSize();
         InstantiateCards();
     }
+
     private void EndGame()
     {
-
+        const int endSceneNumber = 4;
+        Manager.Instance.SceneMove(endSceneNumber);
     }
+
     private void NextLevel()
     {
+        Manager.score += (int)(timer.StopTimer()) * 100;
+        Manager.Instance.SceneMove(level+1);
         Debug.Log("YEAH!");
     }
 
@@ -121,7 +128,7 @@ public class CardGameManager : MonoBehaviour
             SetSizeAndPos(cardObj, randomPosList.Pop());
 
             Card cardComponent = cardObj.GetComponent<Card>();
-            cardComponent.InitCard(num, type, this);
+            cardComponent.InitCard(num, type, this.OnCardClick);
         }
 
         // GamePanel의 크기에 맞춘 크기와 위치
@@ -164,6 +171,7 @@ public class CardGameManager : MonoBehaviour
             selectedCard.state = CardState.DONE;
             selectedCard = null;
             remainCardPairs--;
+            Manager.score += level * 100;
             // TODO : Visual & Sound Effect ^_^!
             if (remainCardPairs <= 0)
             {
@@ -175,6 +183,7 @@ public class CardGameManager : MonoBehaviour
         // 틀렸다! ㅠㅠ
         else
         {
+            Manager.score -= 10;
             card.FlipBack();
             selectedCard.FlipBack();
             selectedCard = null;

@@ -1,4 +1,5 @@
 
+using System;
 using System.IO;
 using System.Collections;
 using UnityEngine;
@@ -10,13 +11,16 @@ public class Card : MonoBehaviour
     public CardType type; // Spade, Heart, Diamond, Club // <- UpperCase
     public CardState state;
 
-    private CardGameManager cardGameManager;
+    private Action<Card> logicFunc;
     private Sprite frontSprite;
     public Sprite backSprite;
 
-    public void InitCard(byte number, CardType type, CardGameManager cardGM)
+    public AudioSource flipFrontSound;
+    public AudioSource flipBackSound;
+
+    public void InitCard(byte number, CardType type, Action<Card> callback)
     {
-        this.cardGameManager = cardGM;
+        this.logicFunc = callback;
         this.number = number;
         this.type = type;
         this.state = CardState.BACK;
@@ -54,41 +58,47 @@ public class Card : MonoBehaviour
         }
     }
 
+    private bool isFlipping = false;
+
     public void OnClick()
     {
-        if(this.state == CardState.BACK)
+        if(this.state == CardState.BACK && !isFlipping)
         {
             FlipFront();
         }
     }
 
-    private bool isFlipping = false;
-
-    public void FlipFront()
+    private void FlipFront()
     {
         if(isFlipping) return;
+
         this.state = CardState.FRONT;
-        StartCoroutine(FlipCoroutine(frontSprite));
+        flipFrontSound.Play();
+        StartCoroutine(FlipCoroutine(frontSprite, () =>
+        {
+            logicFunc(this);
+        }
+        ));
     }
 
     public void FlipBack()
     {
         this.state = CardState.BACK;
-        StartCoroutine(FlipCoroutine(backSprite));
+        flipBackSound.Play();
+        StartCoroutine(FlipCoroutine(backSprite, () =>{}));
     }
 
-    IEnumerator FlipCoroutine(Sprite sprite)
+    private IEnumerator FlipCoroutine(Sprite sprite, Action callback)
     {
-        const byte speed = 3;
-        isFlipping = true;
+        float speed = 600 * Time.fixedDeltaTime;
         for (int i = 0; i < 90 / speed; i++)
         {
             isFlipping = true;
             this.transform.Rotate(Vector2.up * speed);
             float rot = this.transform.rotation.eulerAngles.y;
-            yield return 0;
+            yield return new WaitForFixedUpdate();
         }
-        
+
         this.GetComponent<Image>().sprite = sprite;
 
         for (int i = 0; i < 90 / speed; i++)
@@ -96,10 +106,9 @@ public class Card : MonoBehaviour
             isFlipping = true;
             this.transform.Rotate(-Vector2.up * speed);
             float rot = this.transform.rotation.eulerAngles.y;
-            yield return 0;
+            yield return new WaitForFixedUpdate();
         }
-
-        if(this.state == CardState.FRONT) cardGameManager.OnCardClick(this);
+        callback();
         isFlipping = false;
     }
 

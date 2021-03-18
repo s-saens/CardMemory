@@ -5,8 +5,7 @@ TagManager:
   serializedVersion: 2
   tags:
   - BlackPanel
-  - Card
-  - CardGameManager
+  - Canvas
   layers:
   - Default
   - TransparentFX

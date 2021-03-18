@@ -1,7 +1,7 @@
 public enum CardType
 {
     SPADE,
-    DIAMOND,
     HEART,
+    DIAMOND,
     CLUB
 }
