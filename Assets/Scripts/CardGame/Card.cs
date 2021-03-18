@@ -9,11 +9,13 @@ public class Card : MonoBehaviour
     public CardType type; // Spade, Heart, Diamond, Club // <- UpperCase
     public CardState state;
 
+    private CardGameManager cardGameManager;
     private Sprite frontSprite;
     public Sprite backSprite;
 
-    public void InitCard(byte number, CardType type)
+    public void InitCard(byte number, CardType type, CardGameManager cardGM)
     {
+        this.cardGameManager = cardGM;
         this.number = number;
         this.type = type;
         this.state = CardState.BACK;
@@ -51,20 +53,20 @@ public class Card : MonoBehaviour
         }
     }
 
-    // when it is clicked!
-    public void Flip()
+    public void OnClick()
     {
-        RectTransform rTransform = this.GetComponent<RectTransform>();
-        if(this.state == CardState.BACK)
-        {
-            this.GetComponent<Image>().sprite = frontSprite;
-            this.state = CardState.FRONT;
-        }
-        else if(this.state == CardState.FRONT)
-        {
-            this.GetComponent<Image>().sprite = backSprite;
-            this.state = CardState.BACK;
-        }
+        cardGameManager.OnCardClick(this);
+    }
+
+    public void FlipFront()
+    {
+        this.state = CardState.FRONT;
+        this.GetComponent<Image>().sprite = frontSprite;
+    }
+    public void FlipBack()
+    {
+        this.state = CardState.BACK;
+        this.GetComponent<Image>().sprite = backSprite;
     }
 
     public static bool CheckSame(Card c1, Card c2)

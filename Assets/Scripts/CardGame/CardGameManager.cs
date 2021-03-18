@@ -4,28 +4,46 @@ using System.Collections.Generic;
 
 public class CardGameManager : MonoBehaviour
 {
-
     public Timer timer;
-    public byte stage;
-    public Vector2 xyCounts;
+    public CardGameStageInfo stageInfo;
+    private byte level ;
+    private Vector2 xyCounts;
     public GameObject backGround;
-
-    // xyCount의 x*y개 만큼의 원소를 가짐.
-    private List<Card> cardList = new List<Card>();
 
     public GameObject cardPrefab;
 
-    private void StartGame()
+    private void Start()
     {
+        level = stageInfo.level;
+        xyCounts = stageInfo.xyCounts;
+        timer.limitTime = stageInfo.limitTime;
+        timer.SetTimer();
+
+        SetGamePanelSize();
         InstantiateCards();
     }
+    private void EndGame()
+    {
+
+    }
+    
     // Randomly Instantiate Cards on Canvas
     private void InstantiateCards()
     {
-        byte cardCount = (byte)(xyCounts.x * xyCounts.y);
+        int cardCount = (int)(xyCounts.x * xyCounts.y);
         if(cardCount > 104)
         {
             Debug.LogError("카드 종류는 52가지를 넘을 수 없습니다! 카드 종류 가지수 : " + cardCount/2);
+            return;
+        }
+        if(cardCount % 2 != 0)
+        {
+            Debug.LogError("홀수개일 수 없습니다! 카드 개수 : " + cardCount);
+            return;
+        }
+        if(cardCount == 0)
+        {
+            Debug.LogError("0개입니다");
             return;
         }
 
@@ -78,9 +96,7 @@ public class CardGameManager : MonoBehaviour
             SetSizeAndPos(cardObj, randomPosList.Pop());
 
             Card cardComponent = cardObj.GetComponent<Card>();
-            cardComponent.InitCard(num, type);
-
-            this.cardList.Add(cardComponent);
+            cardComponent.InitCard(num, type, this);
         }
 
         void SetSizeAndPos(GameObject c, byte pos)
@@ -105,13 +121,33 @@ public class CardGameManager : MonoBehaviour
         }
     }
 
-    private void OnCardClick() {
-
-    }
-
-    private void EndGame()
+    private void SetGamePanelSize()
     {
+        RectTransform bgRect = backGround.GetComponent<RectTransform>();
 
+        float bgW = bgRect.rect.width;
+        float bgH = bgRect.rect.height;
+
+        float bgRatio = bgW / bgH;
+        float cardCntRatio = this.xyCounts.x / this.xyCounts.y;
+        Debug.Log(bgRatio);
+        Debug.Log(cardCntRatio);
+
+        if (bgRatio < cardCntRatio) bgH = bgW / cardCntRatio;
+        else if( bgRatio > cardCntRatio) bgW = bgH * cardCntRatio;
+
+        Debug.Log(bgW);
+        Debug.Log(bgH);
+
+        bgRect.sizeDelta = new Vector2(bgW, bgH);
     }
+
+    // Game Logic
+    public void OnCardClick(Card card)
+    {
+        Debug.Log(card.state);
+        if(card.state == CardState.BACK) card.FlipFront();
+    }
+
 
 }

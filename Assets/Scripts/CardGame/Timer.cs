@@ -7,8 +7,8 @@ using System;
 
 public class Timer : MonoBehaviour
 {
+    public int limitTime = 10;
     private float time;
-    private float limitTime;
 
     private Image img;
     private Text timeString;
@@ -18,13 +18,13 @@ public class Timer : MonoBehaviour
     private delegate void GameEndCallback();
     private GameEndCallback endCallback = null;
 
-    private void Start()
+    public void SetTimer()
     {
         img = this.GetComponent<Image>();
         timeString = this.transform.GetChild(0).GetComponent<Text>();
 
         // test TODO : StartTimer를 public으로
-        StartTimer(5, ()=>{Debug.Log("Game End");});
+        StartTimer(limitTime, ()=>{Debug.Log("Game End");});
     }
 
     private void StartTimer(int limitTime, GameEndCallback callback)
@@ -78,6 +78,6 @@ public class Timer : MonoBehaviour
 
     private string FloatToTime(float t)
     {
-        return $"{Mathf.Ceil(t) : 0}";
+        return $"{Mathf.Ceil(t)}";
     }
 }

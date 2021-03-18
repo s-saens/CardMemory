@@ -6,6 +6,7 @@ TagManager:
   tags:
   - BlackPanel
   - Card
+  - CardGameManager
   layers:
   - Default
   - TransparentFX
