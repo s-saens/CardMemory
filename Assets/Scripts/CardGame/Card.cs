@@ -1,5 +1,6 @@
 
 using System.IO;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -55,18 +56,51 @@ public class Card : MonoBehaviour
 
     public void OnClick()
     {
-        cardGameManager.OnCardClick(this);
+        if(this.state == CardState.BACK)
+        {
+            FlipFront();
+        }
     }
+
+    private bool isFlipping = false;
 
     public void FlipFront()
     {
+        if(isFlipping) return;
         this.state = CardState.FRONT;
-        this.GetComponent<Image>().sprite = frontSprite;
+        StartCoroutine(FlipCoroutine(frontSprite));
     }
+
     public void FlipBack()
     {
         this.state = CardState.BACK;
-        this.GetComponent<Image>().sprite = backSprite;
+        StartCoroutine(FlipCoroutine(backSprite));
+    }
+
+    IEnumerator FlipCoroutine(Sprite sprite)
+    {
+        const byte speed = 3;
+        isFlipping = true;
+        for (int i = 0; i < 90 / speed; i++)
+        {
+            isFlipping = true;
+            this.transform.Rotate(Vector2.up * speed);
+            float rot = this.transform.rotation.eulerAngles.y;
+            yield return 0;
+        }
+        
+        this.GetComponent<Image>().sprite = sprite;
+
+        for (int i = 0; i < 90 / speed; i++)
+        {
+            isFlipping = true;
+            this.transform.Rotate(-Vector2.up * speed);
+            float rot = this.transform.rotation.eulerAngles.y;
+            yield return 0;
+        }
+
+        if(this.state == CardState.FRONT) cardGameManager.OnCardClick(this);
+        isFlipping = false;
     }
 
     public static bool CheckSame(Card c1, Card c2)

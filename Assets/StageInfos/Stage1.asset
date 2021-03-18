@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Stage1
   m_EditorClassIdentifier: 
   level: 1
-  xyCounts: {x: 7, y: 2}
+  xyCounts: {x: 2, y: 2}
   limitTime: 30

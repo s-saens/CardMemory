@@ -123,6 +123,17 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!114 &162144673 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6063755438383576439, guid: 4698d379a3a1f4b4485cae66de4746ee, type: 3}
+  m_PrefabInstance: {fileID: 1518969172}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acc0a75e6aaa6a54cac0bf4369a67c33, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -469,6 +480,26 @@ PrefabInstance:
       propertyPath: m_Color.r
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3991261223584887593, guid: b1e32c2975059c8419a8e918dfb11290, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3991261223584887593, guid: b1e32c2975059c8419a8e918dfb11290, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 162144673}
+    - target: {fileID: 3991261223584887593, guid: b1e32c2975059c8419a8e918dfb11290, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: SceneMove
+      objectReference: {fileID: 0}
+    - target: {fileID: 3991261223584887593, guid: b1e32c2975059c8419a8e918dfb11290, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: Manager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 3991261223584887593, guid: b1e32c2975059c8419a8e918dfb11290, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 3991261224418445864, guid: b1e32c2975059c8419a8e918dfb11290, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -556,6 +587,22 @@ PrefabInstance:
     - target: {fileID: 3991261224418448852, guid: b1e32c2975059c8419a8e918dfb11290, type: 3}
       propertyPath: m_Name
       value: StageCanvas
+      objectReference: {fileID: 0}
+    - target: {fileID: 3991261224671065446, guid: b1e32c2975059c8419a8e918dfb11290, type: 3}
+      propertyPath: m_Color.a
+      value: 0.5176471
+      objectReference: {fileID: 0}
+    - target: {fileID: 3991261224671065446, guid: b1e32c2975059c8419a8e918dfb11290, type: 3}
+      propertyPath: m_Color.b
+      value: 0.5235849
+      objectReference: {fileID: 0}
+    - target: {fileID: 3991261224671065446, guid: b1e32c2975059c8419a8e918dfb11290, type: 3}
+      propertyPath: m_Color.g
+      value: 0.5235849
+      objectReference: {fileID: 0}
+    - target: {fileID: 3991261224671065446, guid: b1e32c2975059c8419a8e918dfb11290, type: 3}
+      propertyPath: m_Color.r
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b1e32c2975059c8419a8e918dfb11290, type: 3}
