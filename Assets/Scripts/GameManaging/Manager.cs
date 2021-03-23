@@ -23,10 +23,15 @@ public class Manager : MonoBehaviour
             Destroy(this.gameObject);
         }
     }
-        
+
     private SceneMover sceneMover;
     public static int score = 0;
     public static bool failed = false;
+
+    public AudioSource flipFrontSound;
+    public AudioSource flipBackSound;
+    public AudioSource completeSound;
+    public AudioSource failSound;
 
     private void Awake()
     {

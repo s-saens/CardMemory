@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8ae93c3084c6dc34ca63632c72bd302e, type: 3}
-  m_Name: Stage2
+  m_Name: Stage4
   m_EditorClassIdentifier: 
-  level: 2
-  xyCounts: {x: 3, y: 2}
-  limitTime: 20
+  level: 4
+  xyCounts: {x: 6, y: 3}
+  limitTime: 40

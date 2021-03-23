@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 500309063140239545}
   - component: {fileID: 8081963855218252902}
   - component: {fileID: 7533183320756205529}
+  - component: {fileID: 7332019072502126276}
   m_Layer: 5
   m_Name: Stage
   m_TagString: Untagged
@@ -79,6 +80,18 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: Stage
+--- !u!114 &7332019072502126276
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1214364661781627937}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44b1120f2bb66ab4b985b549edffbf3c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4527990557911152378
 GameObject:
   m_ObjectHideFlags: 0
@@ -564,7 +577,6 @@ MonoBehaviour:
   stageInfo: {fileID: 11400000, guid: 83ce57f1ecd942a4ab6e98be56771585, type: 2}
   gamePanel: {fileID: 8732829934223857181}
   cardPrefab: {fileID: 8436126650139833476, guid: bd79949af6ec48c45bb46abff6ef8876, type: 3}
-  failSound: {fileID: 0}
 --- !u!1 &8732829935686940614
 GameObject:
   m_ObjectHideFlags: 0

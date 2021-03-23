@@ -8,6 +8,7 @@ public class CardGameManager : MonoBehaviour
     public CardGameStageInfo stageInfo;
     private byte level;
     private Vector2 xyCounts;
+    private int cardCount;
 
     public GameObject gamePanel;
     public GameObject cardPrefab;
@@ -15,31 +16,103 @@ public class CardGameManager : MonoBehaviour
     private byte remainCardPairs;
     private Card selectedCard = null;
 
+    List<byte> randomCardNumbersList = new List<byte>();
+    Stack<byte> randomPosList = new Stack<byte>();
+    List<GameObject> cardList = new List<GameObject>();
+
     private void Start()
     {
+        Debug.Log("start");
         level = stageInfo.level;
         xyCounts = stageInfo.xyCounts;
+        cardCount = (int)(xyCounts.x * xyCounts.y);
         timer.StartTimer(stageInfo.limitTime, () => {
             EndGame();
             Manager.failed = true;
         } );
-        remainCardPairs = (byte)(xyCounts.x * xyCounts.y / 2);
+        remainCardPairs = (byte)(cardCount / 2);
 
         SetGamePanelSize();
         InstantiateCards();
     }
 
-    private void EndGame()
+    private void Update()
     {
-        const int endSceneNumber = 4;
-        Manager.Instance.SceneMove(endSceneNumber);
+        if(Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            Hint();
+        }
+        else
+        if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            RefreshCards();
+        }
     }
 
-    private void NextLevel()
+    private void Hint()
     {
-        Manager.score += (int)(timer.StopTimer()) * 100;
-        Manager.Instance.SceneMove(level+1);
-        Debug.Log("YEAH!");
+        foreach(GameObject c in cardList)
+        {
+            if (selectedCard != null)
+            {
+                selectedCard = null;
+            }
+            c.GetComponent<Card>().HintFlip();
+            Manager.score -= 20;
+        }
+    }
+
+    private void RefreshCards()
+    {
+        if(cardList[0].GetComponent<Card>().isHinting) return;
+
+        SetRandomCardNumbers();
+        SetRandomCardPos();
+        selectedCard = null;
+        remainCardPairs = (byte)(cardCount / 2);
+
+        Manager.Instance.flipBackSound.Play();
+        for(int i=0 ; i < cardCount/2 ; ++i)
+        {
+            byte randomNum = randomCardNumbersList[i];
+            byte newNum = (byte) (randomNum % 13 + 1);
+            CardType newType = (CardType)(randomNum / 13);
+            cardList[randomPosList.Pop()].GetComponent<Card>().UpdateCard(newNum,newType);
+            cardList[randomPosList.Pop()].GetComponent<Card>().UpdateCard(newNum,newType);
+        }
+    }
+
+    private void SetRandomCardNumbers()
+    {
+        randomCardNumbersList.Clear();
+        for (byte i = 0; i < cardCount / 2; ++i)
+        {
+            byte r = (byte)Random.Range(0, 52);
+            // 중복된걸 뽑았다면 랜덤 다시 돌리기
+            if (randomCardNumbersList.Contains<byte>(r))
+            {
+                --i;
+                continue;
+            }
+            randomCardNumbersList.Add(r);
+        }
+    }
+
+    private void SetRandomCardPos()
+    {
+        for (byte i = 0; i < cardCount; ++i)
+        {
+            // 가로 세로 개수 곱 만큼 뽑기
+            byte r = (byte)Random.Range(0, cardCount);
+            // 중복된걸 뽑았다면 랜덤 다시 돌리기
+            if (randomPosList.Contains<byte>(r))
+            {
+                --i;
+                continue;
+            }
+            randomPosList.Push(r);
+            Debug.Log(i);
+        }
     }
 
     // Fixed Ratio
@@ -62,7 +135,6 @@ public class CardGameManager : MonoBehaviour
     // Randomly Instantiate Cards on Canvas
     private void InstantiateCards()
     {
-        int cardCount = (int)(xyCounts.x * xyCounts.y);
         if (cardCount > 104)
         {
             Debug.LogError("카드 종류는 52가지를 넘을 수 없습니다! 카드 종류 가지수 : " + cardCount / 2);
@@ -80,37 +152,12 @@ public class CardGameManager : MonoBehaviour
         }
 
         // 중복 없이 '카드' 뽑기
-        List<byte> randomCardList = new List<byte>();
-        Stack<byte> randomPosList = new Stack<byte>();
-
-        for (byte i = 0; i < cardCount / 2; ++i)
-        {
-            byte r = (byte)Random.Range(0, 52);
-            // 중복된걸 뽑았다면 랜덤 다시 돌리기
-            if (randomCardList.Contains<byte>(r))
-            {
-                --i;
-                continue;
-            }
-            randomCardList.Add(r);
-        }
-
+        SetRandomCardNumbers();
         // 중복 없이 '자리' 뽑기
-        for (byte i = 0; i < cardCount; ++i)
-        {
-            // 가로 세로 개수 곱 만큼 뽑기
-            byte r = (byte)Random.Range(0, cardCount);
-            // 중복된걸 뽑았다면 랜덤 다시 돌리기
-            if (randomPosList.Contains<byte>(r))
-            {
-                --i;
-                continue;
-            }
-            randomPosList.Push(r);
-        }
+        SetRandomCardPos();
 
         // 랜덤으로 뽑힌 카드들을 초기화, 생성하고 멤버 리스트에 넣기
-        foreach (byte sel in randomCardList)
+        foreach (byte sel in randomCardNumbersList)
         {
             // 같은 카드에 대해서 두번 해준다.
             InstantiateSelectedCard(sel);
@@ -129,6 +176,7 @@ public class CardGameManager : MonoBehaviour
 
             Card cardComponent = cardObj.GetComponent<Card>();
             cardComponent.InitCard(num, type, this.OnCardClick);
+            cardList.Add(cardObj);
         }
 
         // GamePanel의 크기에 맞춘 크기와 위치
@@ -172,7 +220,6 @@ public class CardGameManager : MonoBehaviour
             selectedCard = null;
             remainCardPairs--;
             Manager.score += level * 100;
-            // TODO : Visual & Sound Effect ^_^!
             if (remainCardPairs <= 0)
             {
                 this.NextLevel();
@@ -187,8 +234,22 @@ public class CardGameManager : MonoBehaviour
             card.FlipBack();
             selectedCard.FlipBack();
             selectedCard = null;
-            // TODO : Sound Effect T_T
             return;
         }
     }
+
+
+    // Ending //
+    private void EndGame()
+    {
+        const int endSceneNumber = 6;
+        Manager.Instance.SceneMove(endSceneNumber);
+    }
+    private void NextLevel()
+    {
+        Manager.score += (int)(timer.StopTimer()) * 100;
+        Manager.Instance.SceneMove(level + 1);
+        Debug.Log("YEAH!");
+    }
+
 }

@@ -15,12 +15,19 @@ public class Card : MonoBehaviour
     private Sprite frontSprite;
     public Sprite backSprite;
 
-    public AudioSource flipFrontSound;
-    public AudioSource flipBackSound;
+    public static bool isFlipping = false;
+    public bool isHinting = false;
 
     public void InitCard(byte number, CardType type, Action<Card> callback)
     {
+        isFlipping = false;
+        isHinting = false;
         this.logicFunc = callback;
+        UpdateCard(number, type);
+    }
+
+    public void UpdateCard(byte number, CardType type)
+    {
         this.number = number;
         this.type = type;
         this.state = CardState.BACK;
@@ -58,11 +65,9 @@ public class Card : MonoBehaviour
         }
     }
 
-    private bool isFlipping = false;
-
     public void OnClick()
     {
-        if(this.state == CardState.BACK && !isFlipping)
+        if(this.state == CardState.BACK && !isFlipping && !isHinting)
         {
             FlipFront();
         }
@@ -73,7 +78,7 @@ public class Card : MonoBehaviour
         if(isFlipping) return;
 
         this.state = CardState.FRONT;
-        flipFrontSound.Play();
+        Manager.Instance.flipFrontSound.Play();
         StartCoroutine(FlipCoroutine(frontSprite, () =>
         {
             logicFunc(this);
@@ -81,10 +86,35 @@ public class Card : MonoBehaviour
         ));
     }
 
+    public void HintFlip()
+    {
+        if(this.state == CardState.DONE) return;
+
+        if(isHinting || isFlipping) return;
+
+        StartCoroutine(HintCoroutine());
+        
+        IEnumerator HintCoroutine()
+        {
+            if(!Manager.Instance.flipFrontSound.isPlaying) Manager.Instance.flipFrontSound.Play();
+            
+            yield return isHinting = true;
+            yield return FlipCoroutine(frontSprite, ()=>{});
+
+            yield return new WaitForSeconds(1);
+
+            if (!Manager.Instance.flipBackSound.isPlaying) Manager.Instance.flipBackSound.Play();
+
+            yield return FlipCoroutine(backSprite, () => { });
+            yield return isHinting = false;
+            yield return this.state = CardState.BACK;
+        }
+    }
+
     public void FlipBack()
     {
         this.state = CardState.BACK;
-        flipBackSound.Play();
+        Manager.Instance.flipBackSound.Play();
         StartCoroutine(FlipCoroutine(backSprite, () =>{}));
     }
 
@@ -109,7 +139,7 @@ public class Card : MonoBehaviour
             yield return new WaitForFixedUpdate();
         }
         callback();
-        isFlipping = false;
+        yield return isFlipping = false;
     }
 
     public static bool CheckSame(Card c1, Card c2)

@@ -5,8 +5,6 @@ public class ResultScene : MonoBehaviour
 {
 
     public Text newHighText;
-    public AudioSource completeSound;
-    public AudioSource failSound;
 
     void Start()
     {
@@ -23,11 +21,11 @@ public class ResultScene : MonoBehaviour
         }
         if(Manager.failed)
         {
-            failSound.Play();
+            Manager.Instance.failSound.Play();
         }
         else
         {
-            completeSound.Play();
+            Manager.Instance.completeSound.Play();
         }
     }
 }
